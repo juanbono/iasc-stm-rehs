@@ -10,7 +10,7 @@ module Rehs.Commands
 where
 
 import Data.List.Split (splitOn)
-import Rehs (SlotTransaction, setTransaction, clearTransaction, readTransaction)
+import Rehs
 
 type Command = [String]
 
@@ -21,3 +21,7 @@ parseSlotTransactionCommand :: Command -> SlotTransaction
 parseSlotTransactionCommand ["set", key, value] = Rehs.setTransaction key value
 parseSlotTransactionCommand ["clear"]      = Rehs.clearTransaction
 parseSlotTransactionCommand ["read"]       = Rehs.readTransaction
+parseSlotTransactionCommand ("schema":xs)  = Rehs.setSchemaTransaction xs
+
+
+

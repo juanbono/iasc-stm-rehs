@@ -29,3 +29,4 @@ executable ping-pong-hs
                   , network   
                   , stm
                   , split
+                  , stm-containers

@@ -12,6 +12,7 @@ module Rehs
   , setTransaction
   , clearTransaction
   , readTransaction
+  , setSchemaTransaction
   , emptyKVTable
   , KVTable
   ) where
@@ -40,3 +41,9 @@ clearTransaction  = \table -> writeTVar table []
 
 readTransaction :: SlotTransaction
 readTransaction = \table -> return ()
+
+setSchemaTransaction :: [String] -> SlotTransaction
+setSchemaTransaction [] = clearTransaction
+setSchemaTransaction xs = \table -> modifyTVar table (setKeys xs)
+  where
+    setKeys list = const $ map (\key -> (key, "")) list
