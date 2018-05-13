@@ -54,5 +54,5 @@ handleCommands handle table = do
     let transaction = parseSlotTransactionLine line
 
     updatedSlot <- updateAndReadSlotIO transaction table
-    hPutStrLn handle updatedSlot
+    hPutStrLn handle $ show updatedSlot
 

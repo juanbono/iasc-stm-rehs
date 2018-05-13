@@ -5,9 +5,10 @@
 -- Notice that all functions in this module return IO's
 ------------------------------------------------------------
 
-module Rehs.IO (
-    newTableIO,
-    updateAndReadSlotIO)where
+module Rehs.IO
+  ( newTableIO
+  , updateAndReadSlotIO
+  ) where
 
 import Rehs
 import Control.Concurrent.STM
@@ -15,5 +16,5 @@ import Control.Concurrent.STM
 newTableIO :: IO Table
 newTableIO = atomically newTable
 
-updateAndReadSlotIO :: SlotTransaction -> Table -> IO String
+updateAndReadSlotIO :: SlotTransaction -> Table -> IO KVTable
 updateAndReadSlotIO transaction = atomically . updateAndReadSlot transaction

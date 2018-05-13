@@ -4,31 +4,39 @@
 -- Notice that all functions in this module return STM's
 ------------------------------------------------------------
 
-module Rehs (
-   Table,
-   SlotTransaction,
-   newTable,
-   updateAndReadSlot,
-   setTransaction,
-   clearTransaction,
-   readTransaction) where
+module Rehs
+  ( Table
+  , SlotTransaction
+  , newTable
+  , updateAndReadSlot
+  , setTransaction
+  , clearTransaction
+  , readTransaction
+  , emptyKVTable
+  , KVTable
+  ) where
 
 import Control.Concurrent.STM
 
-type Table = TVar String
+type KVTable = [(String, String)]
+type Table = TVar KVTable
 type SlotTransaction = Table -> STM ()
 
 newTable :: STM Table
-newTable =  newTVar ""
+newTable =  newTVar []
 
-updateAndReadSlot :: SlotTransaction -> Table -> STM String
+emptyKVTable :: KVTable
+emptyKVTable = []
+
+updateAndReadSlot :: SlotTransaction -> Table -> STM KVTable
 updateAndReadSlot transaction table = transaction table >> readTVar table
 
-setTransaction :: String -> SlotTransaction
-setTransaction value = \table -> modifyTVar table (\_ -> value)
+setTransaction :: String -> String -> SlotTransaction
+setTransaction key value = \table -> modifyTVar table
+  (\oldTable -> (key, value):oldTable)
 
 clearTransaction :: SlotTransaction
-clearTransaction  = \table -> writeTVar table ""
+clearTransaction  = \table -> writeTVar table []
 
 readTransaction :: SlotTransaction
 readTransaction = \table -> return ()
