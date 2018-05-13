@@ -15,7 +15,13 @@ cabal-version:       >=1.8
 
 executable ping-pong-hs
   hs-source-dirs:   src
+
   main-is:          Main.hs
+
+  other-modules:      Rehs
+                    , Rehs.Commands
+                    , Rehs.IO
+                    , Rehs.Server
 
   build-depends:    async
                   , base
