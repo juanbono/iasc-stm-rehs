@@ -6,22 +6,35 @@
 ------------------------------------------------------------
 
 module Rehs.Commands
-  (parseSlotTransactionLine)
-where
+  ( parseSlotTransactionLine
+  , OpType (..)
+  , Operation (..)
+  ) where
 
 import Data.List.Split (splitOn)
 import Rehs
 
 type Command = [String]
 
-parseSlotTransactionLine :: String -> SlotTransaction
+data OpType
+  = Set | Clear | Read | Schema
+  deriving (Eq, Show)
+
+data Operation a
+  = Op OpType a
+
+instance Show a => Show (Operation a) where
+  show (Op Schema _) = "<OK>"
+  show (Op _ a) = show a
+
+parseSlotTransactionLine :: String -> Operation SlotTransaction
 parseSlotTransactionLine = parseSlotTransactionCommand . splitOn ":"
 
-parseSlotTransactionCommand :: Command -> SlotTransaction
-parseSlotTransactionCommand ["set", key, value] = Rehs.setTransaction key value
-parseSlotTransactionCommand ["clear"]      = Rehs.clearTransaction
-parseSlotTransactionCommand ["read"]       = Rehs.readTransaction
-parseSlotTransactionCommand ("schema":xs)  = Rehs.setSchemaTransaction xs
+parseSlotTransactionCommand :: Command -> Operation SlotTransaction
+parseSlotTransactionCommand ["set", k, v] = Op Set $ Rehs.setTransaction k v
+parseSlotTransactionCommand ["clear"]     = Op Clear $ Rehs.clearTransaction
+parseSlotTransactionCommand ["read"]      = Op Read $ Rehs.readTransaction
+parseSlotTransactionCommand ("schema":xs) = Op Schema $ Rehs.setSchemaTransaction xs
 
 
 

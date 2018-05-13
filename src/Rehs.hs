@@ -43,7 +43,7 @@ readTransaction :: SlotTransaction
 readTransaction = \table -> return ()
 
 setSchemaTransaction :: [String] -> SlotTransaction
-setSchemaTransaction [] = clearTransaction
+setSchemaTransaction [] = \table -> writeTVar table []
 setSchemaTransaction xs = \table -> modifyTVar table (setKeys xs)
   where
     setKeys list = const $ map (\key -> (key, "")) list

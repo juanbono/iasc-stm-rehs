@@ -12,9 +12,12 @@ module Rehs.IO
 
 import Rehs
 import Control.Concurrent.STM
+import Rehs.Commands
 
 newTableIO :: IO Table
 newTableIO = atomically newTable
 
-updateAndReadSlotIO :: SlotTransaction -> Table -> IO KVTable
-updateAndReadSlotIO transaction = atomically . updateAndReadSlot transaction
+updateAndReadSlotIO :: Operation SlotTransaction -> Table -> IO (Operation KVTable)
+updateAndReadSlotIO (Op t transaction) table = Op t <$> (applyTrans table)
+  where
+    applyTrans = atomically . updateAndReadSlot transaction
